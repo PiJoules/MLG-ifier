@@ -1,0 +1,25 @@
+{
+	"name": "MLG-ifier",
+	"description":"Le Reddit Armie is here to hand out fedoras and MLG pwn sum cheeky scrubs-m80s",
+	"version":"1",
+	"manifest_version":2,
+
+	"permissions": ["http://*/*", "https://*/*", "activeTab", "tabs"],
+
+	"browser_action": {
+		"default_icon": "images/fedora.png",
+		"default_title": "MLG-ifiy"
+	},
+
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"js": ["jquery.min.js"]
+		}
+	],
+
+	"background": {
+		"persistent": false,
+		"scripts": ["extensionListener.js"]
+	}
+}
