@@ -14,12 +14,14 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*"],
-			"js": ["jquery.min.js"]
+			"js": ["jquery.min.js", "lexer.js", "lexicon.js_", "POSTagger.js"]
 		}
 	],
 
 	"background": {
 		"persistent": false,
 		"scripts": ["extensionListener.js"]
-	}
+	},
+
+	"web_accessible_resources": ["sounds/airhorn.mp3"]
 }
