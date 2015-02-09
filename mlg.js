@@ -23,19 +23,19 @@ $("img").each(function(){
 // word replacements
 // Penn Treebank POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
 var treeBank = {
-	"JJ": ["dank", "MLG"],
+	"JJ": ["dank", "MLG", "euphoric"],
 	"JJR": ["danker", "more MLG"],
 	"JJS": ["dankinest", "MLG-inest"],
-	"NN": ["dankineer", "pineapple", "Gurl", "m8", "parody", "subreddit", "meme", "scrub", "mountain dew"],
+	"NN": ["dankineer", "pineapple", "Gurl", "m8", "m9", "m80", "parody", "subreddit", "meme", "scrub", "mountain dew", "weed", "blunt", "ebola"],
 	"NNS": ["dankineers", "pineapples", "Gurlz", "m80s", "m89s", "memes", "scrubs", "doritos"],
-	"NNP": ["Sp00nr", "Reddit"],
+	"NNP": ["Sp00nr", "Reddit", "Le Reddit Armie", "Snipars", "Vagabonds"],
 	"VBD": ["rekt", "upboated", "rekm8ed"],
 	"VBP": ["transl8", "feel", "upboat", "upvote", "rip", "rekm8"],
 	"VBZ": ["rekts", "upboats"]
 };
 
 // Replace text in divs with only text (and no child HTML elements), and ps
-$("p,div:not(:has(*)),a:not(:has(*)),span").each(function(){
+$("span:not(:has(*)),p:not(:has(*)),div:not(:has(*)),a:not(:has(*))").each(function(){
 	var text = $(this).text();
 	var words = new Lexer().lex(text);
 	var taggedWords = new POSTagger().tag(words);
@@ -55,6 +55,13 @@ $("p,div:not(:has(*)),a:not(:has(*)),span").each(function(){
 // Audia tag for playing sound
 $("body").append('<audio id="audiotag1" src="' + chrome.extension.getURL('sounds/airhorn.mp3') + '" preload="auto"></audio>');
 playAirhorn();
+
+// Change background image of body
+$("body").css({
+	"background-image": getRandomElement(images),
+	"background-size": "cover",
+	"background-position": "center"
+});
 
 window.setInterval(function(){
 	// 1% chance of playing airhorn every 5 seconds
