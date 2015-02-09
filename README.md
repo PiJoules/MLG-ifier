@@ -16,3 +16,6 @@ Activating the MLG-ifier will
 
 ## Dependencies
 - [jspos](https://code.google.com/p/jspos/)
+
+## Todo
+- Add more dank memes + words + sounds
