@@ -23,15 +23,15 @@ $("img").each(function(){
 // word replacements
 // Penn Treebank POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
 var treeBank = {
-	"JJ": ["dank", "MLG", "euphoric"],
-	"JJR": ["danker", "more MLG"],
-	"JJS": ["dankinest", "MLG-inest"],
-	"NN": ["dankineer", "pineapple", "Gurl", "m8", "m9", "m80", "parody", "subreddit", "meme", "scrub", "mountain dew", "weed", "blunt", "ebola"],
-	"NNS": ["dankineers", "pineapples", "Gurlz", "m80s", "m89s", "memes", "scrubs", "doritos"],
-	"NNP": ["Sp00nr", "Reddit", "Le Reddit Armie", "Snipars", "Vagabonds"],
-	"VBD": ["rekt", "upboated", "rekm8ed"],
-	"VBP": ["transl8", "feel", "upboat", "upvote", "rip", "rekm8"],
-	"VBZ": ["rekts", "upboats"]
+	"JJ": ["dank", "MLG", "euphoric", "( ͡° ͜ʖ ͡°)"],
+	"JJR": ["danker", "more MLG", "( ͡° ͜ʖ ͡°)"],
+	"JJS": ["dankinest", "MLG-inest", "( ͡° ͜ʖ ͡°)"],
+	"NN": ["dankineer", "pineapple", "Gurl", "m8", "m9", "m80", "parody", "subreddit", "meme", "scrub", "mountain dew", "weed", "blunt", "ebola", "fedora", "trilby", "9/11", "( ͡° ͜ʖ ͡°)", "johnbob"],
+	"NNS": ["dankineers", "pineapples", "Gurlz", "m80s", "m89s", "memes", "scrubs", "doritos", "jimmies", "trilbies", "( ͡° ͜ʖ ͡°)", "johbobs"],
+	"NNP": ["Sp00nr", "Reddit", "Le Reddit Armie", "Snipars", "Vagabonds", "M'lady", "Good Sir", "9/11", "( ͡° ͜ʖ ͡°)"],
+	"VBD": ["rekt", "upboated", "rekm8ed", "rustled", "( ͡° ͜ʖ ͡°)", "robbled", "flustered"],
+	"VBP": ["transl8", "feel", "upboat", "upvote", "rip", "rekm8", "rustle", "( ͡° ͜ʖ ͡°)", "robble", "fluster"],
+	"VBZ": ["rekts", "upboats", "rustles", "( ͡° ͜ʖ ͡°)", "robbles", "flusters"]
 };
 
 // Replace text in divs with only text (and no child HTML elements), and ps
@@ -46,7 +46,20 @@ $("span:not(:has(*)),p:not(:has(*)),div:not(:has(*)),a:not(:has(*))").each(funct
 
 		// 50% chance of changing each word
 		if (tag in treeBank && Math.random() < 0.5){
-			text = text.replace(word, getRandomElement(treeBank[tag]));
+			if (Math.random() < 0.2){
+				text = text.replace(word, "xXx_" + word + "_xXx");
+			}
+			else {
+				var randWord = getRandomElement(treeBank[tag]);
+
+				// 10% chance of adding xXx_word_xXx to noun
+				if (tag === "NN" || tag === "NNS" || tag === "NNP"){
+					if (Math.random() < 0.05){
+						randWord = "xXx_" + randWord + "_xXx";
+					}
+				}
+				text = text.replace(word, randWord);
+			}
 		}
 	}
 	$(this).text(text);
