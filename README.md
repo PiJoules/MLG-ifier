@@ -1,6 +1,8 @@
 # The MLG-ifier 
 A chrome extension that will turn those cheeky websites into Reddit 420 blaze it blunts that MLG pros will find euphoric.
 
+[Here](http://pijoules.github.io/MLG-ifier/) is a demo of the MLG-ifier on my github user page without having to install it first. Loading/refreshing this demo page shows what happens every time the MLG-ifier is first clicked.
+
 ## Installation
 1) MLG clone this dank repo
 ```sh
@@ -13,6 +15,7 @@ $ git clone https://github.com/PiJoules/MLG-ifier.git
 - Dankify text into l33t lingo your no-scopers will understand
 - Play legit sounds every so often
 - run, Sanic, run
+- Comic Sansify these m80s
 - Additional features from the [mlg-userscript](https://github.com/twerkclan/mlg-userscript)
 
 ## Dependencies
