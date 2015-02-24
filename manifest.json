@@ -14,7 +14,7 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*"],
-			"js": ["jquery.min.js", "lexer.js", "lexicon.js_", "POSTagger.js"]
+			"js": ["js/jquery.min.js", "js/lexer.js", "js/lexicon.js_", "js/POSTagger.js", "js/mlg-userscript.js"]
 		}
 	],
 
@@ -23,5 +23,5 @@
 		"scripts": ["extensionListener.js"]
 	},
 
-	"web_accessible_resources": ["sounds/airhorn.mp3"]
+	"web_accessible_resources": ["sounds/*"]
 }
