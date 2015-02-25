@@ -3,7 +3,10 @@ A chrome extension that will turn those cheeky websites into Reddit 420 blaze it
 
 [Here](http://pijoules.github.io/MLG-ifier/) is a demo of the MLG-ifier on my github user page without having to install it first. Loading/refreshing this demo page shows what happens every time the MLG-ifier is first clicked.
 
-## Installation
+## Chrome Webstore
+The latest release of the extension can be installed [here](https://chrome.google.com/webstore/detail/mlg-ifier/dneebgdgldanagagmfhnphjelnngdcai).
+
+## Installation (via git)
 1) MLG clone this dank repo
 ```sh
 $ git clone https://github.com/PiJoules/MLG-ifier.git
