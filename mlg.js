@@ -22,7 +22,6 @@ var images = [
 	"http://i.imgur.com/n41tcFI.gif",
 	"http://i.imgur.com/e9unmW9.png",
 	"http://s3-ec.buzzfed.com/static/enhanced/webdr06/2013/6/12/10/enhanced-buzz-16022-1371047559-13.jpg",
-	"https://raw.githubusercontent.com/PiJoules/John-s-Facebook/master/images/johns%20family.png",
 	"http://i.imgur.com/oTxFnjp.png",
 	"http://i.imgur.com/nC9Sluu.gif",
 	"http://i.imgur.com/b87y0Vp.gif",
