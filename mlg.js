@@ -115,6 +115,9 @@ if ($("#xXx_mlg_checker_xXx").length === 0){
                 }
             }
         }
+    
+        text = ayylmao(text);
+
         $(this).text(text);
     });
     
@@ -180,6 +183,18 @@ function runSanic(){
     });
 }
 
+function ayylmao(text){
+    // Replace "ay" with ayy lmao
+    var lines = text.split(/[ ]+/); // Split on spaces
+    for (i = 0; i < lines.length; i++) { 
+        var word = lines[i];
+        if (word.length > 2 && word.substring(word.length-2, word.length)=="ay") {
+            word = word + "y lmao";
+            text = text.replace(lines[i], word);
+        }
+    }
+    return text;
+}
 
 // Audio tag for playing sound
 var randSound = getRandomElement(sounds);
