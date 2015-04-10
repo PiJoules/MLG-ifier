@@ -87,9 +87,10 @@ if ($("#xXx_mlg_checker_xXx").length === 0){
         $(this).attr("src", getRandomElement(images)).attr("height","").css("height","auto");
     });
     
-    // Replace text in divs with only text (and no child HTML elements), and ps
-    $("span:not(:has(*)),p:not(:has(*)),div:not(:has(*)),a:not(:has(*))").each(function(){
-        var text = $(this).text();
+    // Get all text nodes on the page and increase the dankness of the text
+    var textNodes = textNodesUnder(document.documentElement);
+    for (var nodeNum = 0; nodeNum < textNodes.length; nodeNum++) {
+        var text = textNodes[nodeNum].nodeValue;
         var words = new Lexer().lex(text);
         var taggedWords = new POSTagger().tag(words);
         for (var i in taggedWords) {
@@ -118,8 +119,8 @@ if ($("#xXx_mlg_checker_xXx").length === 0){
     
         text = ayylmao(text);
 
-        $(this).text(text);
-    });
+        textNodes[nodeNum].nodeValue = text;
+    }
     
     /* ( ͡° ͜ʖ ͡°) MLG event handling */
     /* "oi u cheeky cunt 1v1 me" --skrillex */
@@ -194,6 +195,18 @@ function ayylmao(text){
         }
     }
     return text;
+}
+
+function textNodesUnder(node){
+    // Shamelessly stolen from stack overflow
+    var all = [];
+    for (node = node.firstChild; node; node = node.nextSibling) {
+        if (node.nodeType == 3) // If it is a text node
+            all.push(node);
+        else
+            all = all.concat(textNodesUnder(node));
+    }
+    return all;
 }
 
 // Audio tag for playing sound
