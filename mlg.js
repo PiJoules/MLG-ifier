@@ -1,96 +1,74 @@
 
-
-
+// Globals
 
 // only perform certain actions once
-// keep track of if perfomred by adding a unique element to the dom
+// keep track of if performed by adding a unique element to the dom
 var MLGchecker = "xXx_mlg_checker_xXx";
 
-// Replace sources of all images
-var images = [
-	"http://i.imgur.com/spEe2uf.jpg",
-	"http://i.imgur.com/hsGl9J0.png",
-	"http://i.imgur.com/SoE7jVi.jpg",
-	"http://i.imgur.com/reZXpqs.jpg",
-	"http://i.imgur.com/8EHkaox.jpg",
-	"http://i.imgur.com/ymU48Db.gif",
-	"http://puu.sh/3ObVc.gif",
-	"http://puu.sh/41mIF.gif",
-	"http://puu.sh/41mMg.gif",
-	"http://puu.sh/41mP0.gif",
-	"http://puu.sh/41mQ5.gif",
-	"http://i.imgur.com/n41tcFI.gif",
-	"http://i.imgur.com/e9unmW9.png",
-	"http://s3-ec.buzzfed.com/static/enhanced/webdr06/2013/6/12/10/enhanced-buzz-16022-1371047559-13.jpg",
-	"http://i.imgur.com/oTxFnjp.png",
-	"http://i.imgur.com/nC9Sluu.gif",
-	"http://i.imgur.com/b87y0Vp.gif",
-	"http://i.imgur.com/QNy5cAF.png",
-	"http://i.imgur.com/op9PWrr.gif",
-	"http://i.imgur.com/5Ro9KS9.gif?1",
-	"http://i.imgur.com/6tzgjkR.png",
-	"http://i.imgur.com/Sm86W97.png?1",
-    "http://i.ytimg.com/vi/N7W_ilTM1_w/maxresdefault.jpg",
-    "http://i.imgur.com/t4vrAy0.png",
-    "http://i.imgur.com/cmsXNAK.jpg",
-    "http://i.imgur.com/lnQKKNY.gif",
-    "http://i.imgur.com/1Fa8BPq.jpg",
-    "http://i.imgur.com/s2RN7HK.jpg",
-    "http://i.imgur.com/3Cn6ug0.png",
-    "http://files.gamebanana.com/img/ico/sprays/538acd5a7838b.gif" // the sanic one
-];
-
-var sounds = [
-    "airhorn.mp3",
-    "If You Know What I Mean.m4a",
-    "DAMN SON WHERED YOU FIND THIS.mp3",
-    "Oh Baby A Triple.mp3",
-    "SMOKE WEEK EVERYDAY.mp3",
-    "SANIC.mp3"
-];
-*/
 // Globals for fedora loop
-var mouseX = 0;
-var mouseY = 0;
-var fedoras = [];
-var velocities = [];
-var fedoraCreationInterval;
-var fedoraAnimationInterval;
-
-/*
-"Autumn Blaze" colors (straignt from http://www.colourlovers.com/palette/2996458/autumn_blaze)
-Sam Loomis (whiteish): F9F7F6
-Vanilla Scoop (skin colorish): FBF5D7
-run in the sun (yellow orange ish): FFDD49
-Cheddar Please (orangeish): FCBD49
-light green weed: 7ABA71
-*/
-var weedColors = [
-    [249,247,246],
-    [251,245,215],
-    [255,221,73],
-    [252,189,73],
-    [122,186,113]
-];
-
+var mouseX, mouseY;
+var fedoras, velocities;
+var isRainingFedoras;
+var fedoraCreationInterval, fedoraAnimationInterval;
 
 // word replacements
 // Penn Treebank POS tags: https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
 var treeBank = {
-	/* Adjectives */ "JJ": ["dank", "MLG", "euphoric", "( ͡° ͜ʖ ͡°)", "bestselling"],
-	/* Adjective, comparative */ "JJR": ["danker", "more MLG", "( ͡° ͜ʖ ͡°)"],
-	/* Adjective, superlative */ "JJS": ["dankinest", "MLG-inest", "( ͡° ͜ʖ ͡°)"],
-	/* Noun, singular */ "NN": ["dankineer", "pineapple", "Gurl", "m8", "m9", "m80", "parody", "subreddit", "meme", "scrub", "mountain dew", "weed", "blunt", "ebola", "fedora", "trilby", "9/11", "( ͡° ͜ʖ ͡°)", "johnbob", "9gag", "9gagger"],
-	/* Noun, plural */ "NNS": ["dankineers", "pineapples", "Gurlz", "m80s", "m89s", "memes", "scrubs", "doritos", "jimmies", "trilbies", "( ͡° ͜ʖ ͡°)", "johbobs", "9gaggers"],
-	/* Proper noun, singular */ "NNP": ["Sp00nr", "Reddit", "Le Reddit Armie", "Snipars", "Vagabonds", "M'lady", "Good Sir", "9/11", "( ͡° ͜ʖ ͡°)", "Milton Dew", "Megatokyo", "Rush Limbaugh"],
-	/* Verb, past tense */ "VBD": ["rekt", "upboated", "rekm8ed", "rustled", "( ͡° ͜ʖ ͡°)", "robbled", "flustered"],
-	/* Verb, non-3rd person singular present */ "VBP": ["transl8", "feel", "upboat", "upvote", "rip", "rekm8", "rustle", "( ͡° ͜ʖ ͡°)", "robble", "fluster"],
-	/* Verb, 3rd person singular present */ "VBZ": ["rekts", "upboats", "rustles", "( ͡° ͜ʖ ͡°)", "robbles", "flusters"]
+    /* Adjectives */ "JJ": ["dank", "MLG", "euphoric", "( ͡° ͜ʖ ͡°)", "bestselling"],
+    /* Adjective, comparative */ "JJR": ["danker", "more MLG", "( ͡° ͜ʖ ͡°)"],
+    /* Adjective, superlative */ "JJS": ["dankinest", "MLG-inest", "( ͡° ͜ʖ ͡°)"],
+    /* Noun, singular */ "NN": ["dankineer", "pineapple", "Gurl", "m8", "m9", "m80", "parody", "subreddit", "meme", "scrub", "mountain dew", "weed", "blunt", "ebola", "fedora", "trilby", "9/11", "( ͡° ͜ʖ ͡°)", "johnbob", "9gag", "9gagger"],
+    /* Noun, plural */ "NNS": ["dankineers", "pineapples", "Gurlz", "m80s", "m89s", "memes", "scrubs", "doritos", "jimmies", "trilbies", "( ͡° ͜ʖ ͡°)", "johbobs", "9gaggers"],
+    /* Proper noun, singular */ "NNP": ["Sp00nr", "Reddit", "Le Reddit Armie", "Snipars", "Vagabonds", "M'lady", "Good Sir", "9/11", "( ͡° ͜ʖ ͡°)", "Milton Dew", "Megatokyo", "Rush Limbaugh"],
+    /* Verb, past tense */ "VBD": ["rekt", "upboated", "rekm8ed", "rustled", "( ͡° ͜ʖ ͡°)", "robbled", "flustered"],
+    /* Verb, non-3rd person singular present */ "VBP": ["transl8", "feel", "upboat", "upvote", "rip", "rekm8", "rustle", "( ͡° ͜ʖ ͡°)", "robble", "fluster"],
+    /* Verb, 3rd person singular present */ "VBZ": ["rekts", "upboats", "rustles", "( ͡° ͜ʖ ͡°)", "robbles", "flusters"]
 };
 
 
-// Only perform these actions once
-if ($("#xXx_mlg_checker_xXx").length === 0){
+
+// Attempt to load settings from chrome storage
+var images, sounds;
+chrome.storage.sync.get(["images", "sounds"], function(items){
+    images = items.images;
+    sounds = items.sounds;
+
+    if(typeof images == "undefined" || typeof sounds == "undefined"){
+        console.log("Loading defaults");
+        // Settings not in storage, load and save defaults
+        $.getJSON(chrome.extension.getURL("settings.json"), function( data ) {
+            // Can't mlg-ify until json is loaded, so call mlg-iifier in getJSON callback
+            images = data.images;
+            sounds = data.sounds;
+            // Only mlg-ify webpage once
+            if ($("#xXx_mlg_checker_xXx").length === 0){
+                // add the mlg checker
+                $("body").append("<div id='xXx_mlg_checker_xXx'></div>");
+                mlg_ify();
+            }
+
+            doSomethingDank()
+
+            chrome.storage.sync.set({ "images": images, "sounds": sounds }, function(){
+                console.log("Dank memes yo");
+            });
+        });
+    }
+    else{
+        console.log("Loaded from chrome settings");
+        // Only mlg-ify webpage once
+        if ($("#xXx_mlg_checker_xXx").length === 0){
+            // add the mlg checker
+            $("body").append("<div id='xXx_mlg_checker_xXx'></div>");
+            mlg_ify();
+        }
+
+        doSomethingDank()    
+    }
+});
+
+// +420% dankness to text, images, event listeners, and window intervals
+function mlg_ify(){
     $("img:not(#sanic2fast)").each(function(){
         $(this).attr("src", getRandomElement(images)).attr("height","").css("height","auto");
     });
@@ -160,8 +138,69 @@ if ($("#xXx_mlg_checker_xXx").length === 0){
     css.type = "text/css";
     css.innerHTML = "* { font-family: \"Comic Sans MS\" !important; }";
     document.body.appendChild(css);
+
+    window.setInterval(function(){
+        // 1% chance of playing random sound every 5 seconds
+        if (Math.random() < 0.01){
+            var nextRandSound = getRandomElement(sounds);
+            if (typeof chrome.extension !== "undefined")
+                changeSound(initRandSoundID, chrome.extension.getURL('sounds/' + nextRandSound));
+            else
+                changeSound(initRandSoundID, 'sounds/' + nextRandSound);
+            playSound(initRandSoundID);
+            
+            if (nextRandSound === "SANIC.mp3"){
+                runSanic();
+            }
+        }
+    }, 5000);
+
+    // Initialize fedora tracker
+    mouseX = 0;
+    mouseY = 0;
+    fedoras = [];
+    velocities = [];
+    isRainingFedoras = false;
 }
 
+// MLG-ifier callback for every time fedora is clicked (can be called more than once)
+function doSomethingDank(){
+    // Audio tag for playing sound
+    var randSound = getRandomElement(sounds);
+    var initRandSoundID = "initSound";
+    if (typeof chrome.extension !== "undefined")
+        addSound(initRandSoundID, chrome.extension.getURL('sounds/' + randSound));
+    else
+        addSound(initRandSoundID, 'sounds/' + randSound);
+    playSound(initRandSoundID);
+
+    if (!$("#sanic2fast").length)
+        $("body").append("<img id='sanic2fast' src='http://files.gamebanana.com/img/ico/sprays/538acd5a7838b.gif' />");
+
+    $("#sanic2fast").css({
+        "position": "fixed",
+        "top": "calc(50% - 128px)",
+        "left": "-256px",
+        "z-index": "10000000"
+    });
+
+    if (randSound === "SANIC.mp3"){
+        runSanic();
+    }
+
+
+    // Change background image of body
+    $("body").css({
+        "background-image": getRandomElement(images),
+        "background-size": "cover",
+        "background-position": "center"
+    });
+
+    // Release the fedoras m'lady (if they're not already raining)
+    if(!isRainingFedoras){
+        fedoraStorm();
+    }
+}
 
 function addSound(id, src){
     if ($("#" + id).length)
@@ -256,6 +295,7 @@ function fedoraAnimationLoop(){
 
 // Creates the fedora storm
 function fedoraStorm(){
+    isRainingFedoras = true;
     // Create listener to track mouse position
     document.onmousemove = function(e) {
         mouseX = e.pageX;
@@ -265,70 +305,17 @@ function fedoraStorm(){
     // Add fedoras while storm is active
     fedoraCreationInterval = window.setInterval(fedoraCreationLoop, 50);
     fedoraAnimationInterval = window.setInterval(fedoraAnimationLoop, 20);
-}
-
-// Audio tag for playing sound
-var randSound = getRandomElement(sounds);
-var initRandSoundID = "initSound";
-if (typeof chrome.extension !== "undefined")
-    addSound(initRandSoundID, chrome.extension.getURL('sounds/' + randSound));
-else
-    addSound(initRandSoundID, 'sounds/' + randSound);
-playSound(initRandSoundID);
-
-if (!$("#sanic2fast").length)
-    $("body").append("<img id='sanic2fast' src='http://files.gamebanana.com/img/ico/sprays/538acd5a7838b.gif' />");
-
-$("#sanic2fast").css({
-    "position": "fixed",
-    "top": "calc(50% - 128px)",
-    "left": "-256px",
-    "z-index": "10000000"
-});
-
-if (randSound === "SANIC.mp3"){
-    runSanic();
-}
-
-
-// Change background image of body
-$("body").css({
-	"background-image": getRandomElement(images),
-	"background-size": "cover",
-	"background-position": "center"
-});
-
-window.setInterval(function(){
-	// 1% chance of playing random sound every 5 seconds
-	if (Math.random() < 0.01){
-        var nextRandSound = getRandomElement(sounds);
-        if (typeof chrome.extension !== "undefined")
-            changeSound(initRandSoundID, chrome.extension.getURL('sounds/' + nextRandSound));
-        else
-            changeSound(initRandSoundID, 'sounds/' + nextRandSound);
-		playSound(initRandSoundID);
-        
-        if (nextRandSound === "SANIC.mp3"){
-            runSanic();
-        }
-	}
-}, 5000);
-
-// Release the fedoras m'lady
-fedoraStorm();
-setTimeout(function() {
+    
     // Stop fedora storm after 10 seconds
-    console.log("Timed out");
-    window.clearInterval(fedoraCreationInterval);
-    window.clearInterval(fedoraAnimationInterval);
+    setTimeout(function() {
+        console.log("Timed out");
+        window.clearInterval(fedoraCreationInterval);
+        window.clearInterval(fedoraAnimationInterval);
 
-    // Clean up any remaining fedoras
-    $(".fedora").remove();
-    fedoras = [];
-    velocities = [];
-} , 10000);
-
-// add the mlg checker
-if ($("#xXx_mlg_checker_xXx").length === 0)
-    $("body").append("<div id='xXx_mlg_checker_xXx'></div>");
-
+        // Clean up any remaining fedoras
+        $(".fedora").remove();
+        fedoras = [];
+        velocities = [];
+        isRainingFedoras = false;
+    } , 10000);
+}

@@ -27,7 +27,7 @@
 
     "background": {
         "persistent": false,
-        "scripts": ["js/extensionListener.js"]
+        "scripts": ["extensionListener.js"]
     },
 
     "web_accessible_resources": ["sounds/*", "images/fedora.png", "settings.json"],
