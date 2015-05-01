@@ -48,6 +48,14 @@ var sounds = [
     "SMOKE WEEK EVERYDAY.mp3",
     "SANIC.mp3"
 ];
+*/
+// Globals for fedora loop
+var mouseX = 0;
+var mouseY = 0;
+var fedoras = [];
+var velocities = [];
+var fedoraCreationInterval;
+var fedoraAnimationInterval;
 
 /*
 "Autumn Blaze" colors (straignt from http://www.colourlovers.com/palette/2996458/autumn_blaze)
@@ -209,6 +217,56 @@ function textNodesUnder(node){
     return all;
 }
 
+function fedoraCreationLoop(){
+    // Create new fedora at mouse location
+    var fedora = document.createElement("img");
+    var url = chrome.extension.getURL("images/fedora.png");
+    fedora.setAttribute("class", "fedora");
+    fedora.setAttribute("src", url);
+    fedora.setAttribute("style", "position:absolute");
+    document.body.appendChild(fedora);
+    fedora.style.zIndex = 99999999; // 3 high 5 u
+    fedora.style.left = mouseX - fedora.clientWidth/2 + "px";
+    fedora.style.top = mouseY - fedora.clientHeight/2 + "px";
+    fedoras.push(fedora);
+
+    // Give it a random direction of travel
+    angle = 2*Math.PI*Math.random();
+    dx = 20*Math.cos(angle);
+    dy = 20*Math.sin(angle);
+    velocities.push([dx, dy]);
+}
+
+function fedoraAnimationLoop(){
+    // Move all fedoras
+    for (var i = 0; i < fedoras.length; i++){
+        // Remove if outside of window
+        var rect = fedoras[i].getBoundingClientRect();
+        if(rect.right < 0 || rect.bottom < 0 || rect.left > window.innerWidth || rect.top > window.innerHeight){
+            document.body.removeChild(fedoras[i]);
+            fedoras.splice(i, 1);
+            velocities.splice(i, 1);
+            i--;
+            continue;
+        }
+        fedoras[i].style.left = Math.round(parseInt(fedoras[i].style.left) + velocities[i][0]) + "px";
+        fedoras[i].style.top = Math.round(parseInt(fedoras[i].style.top) + velocities[i][1]) + "px";
+    }
+}
+
+// Creates the fedora storm
+function fedoraStorm(){
+    // Create listener to track mouse position
+    document.onmousemove = function(e) {
+        mouseX = e.pageX;
+        mouseY = e.pageY;
+    }
+
+    // Add fedoras while storm is active
+    fedoraCreationInterval = window.setInterval(fedoraCreationLoop, 50);
+    fedoraAnimationInterval = window.setInterval(fedoraAnimationLoop, 20);
+}
+
 // Audio tag for playing sound
 var randSound = getRandomElement(sounds);
 var initRandSoundID = "initSound";
@@ -256,6 +314,19 @@ window.setInterval(function(){
 	}
 }, 5000);
 
+// Release the fedoras m'lady
+fedoraStorm();
+setTimeout(function() {
+    // Stop fedora storm after 10 seconds
+    console.log("Timed out");
+    window.clearInterval(fedoraCreationInterval);
+    window.clearInterval(fedoraAnimationInterval);
+
+    // Clean up any remaining fedoras
+    $(".fedora").remove();
+    fedoras = [];
+    velocities = [];
+} , 10000);
 
 // add the mlg checker
 if ($("#xXx_mlg_checker_xXx").length === 0)
