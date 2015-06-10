@@ -5,6 +5,8 @@
 // keep track of if performed by adding a unique element to the dom
 var MLGchecker = "xXx_mlg_checker_xXx";
 
+var images, sounds;
+
 // Globals for fedora loop
 var mouseX, mouseY;
 var fedoras, velocities;
@@ -28,7 +30,6 @@ var treeBank = {
 
 
 // Attempt to load settings from chrome storage
-var images, sounds;
 chrome.storage.sync.get(["images", "sounds"], function(items){
     images = items.images;
     sounds = items.sounds;
@@ -47,7 +48,7 @@ chrome.storage.sync.get(["images", "sounds"], function(items){
                 mlg_ify();
             }
 
-            doSomethingDank()
+            doSomethingDank();
 
             chrome.storage.sync.set({ "images": images, "sounds": sounds }, function(){
                 console.log("Dank memes yo");
@@ -63,7 +64,7 @@ chrome.storage.sync.get(["images", "sounds"], function(items){
             mlg_ify();
         }
 
-        doSomethingDank()    
+        doSomethingDank();    
     }
 });
 
@@ -188,7 +189,6 @@ function doSomethingDank(){
         runSanic();
     }
 
-
     // Change background image of body
     $("body").css({
         "background-image": getRandomElement(images),
@@ -247,11 +247,14 @@ function ayylmao(text){
 function textNodesUnder(node){
     // Shamelessly stolen from stack overflow
     var all = [];
-    for (node = node.firstChild; node; node = node.nextSibling) {
-        if (node.nodeType == 3) // If it is a text node
+    for(node = node.firstChild; node; node = node.nextSibling){
+        if(node.nodeType == 3) // If it is a text node
             all.push(node);
-        else
-            all = all.concat(textNodesUnder(node));
+        else{
+            if(node.nodeName != "SCRIPT"){
+                all = all.concat(textNodesUnder(node));
+            }
+        }
     }
     return all;
 }
