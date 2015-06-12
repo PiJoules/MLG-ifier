@@ -28,13 +28,13 @@ var treeBank = {
 };
 
 
-
 // Attempt to load settings from chrome storage
-chrome.storage.sync.get(["images", "sounds"], function(items){
+chrome.storage.sync.get(["customSettings", "images", "sounds"], function(items){
+    customSettings = items.customSettings;
     images = items.images;
     sounds = items.sounds;
 
-    if(typeof images == "undefined" || typeof sounds == "undefined"){
+    if(!customSettings || typeof images == "undefined" || typeof sounds == "undefined"){
         console.log("Loading defaults");
         // Settings not in storage, load and save defaults
         $.getJSON(chrome.extension.getURL("settings.json"), function( data ) {
@@ -49,10 +49,6 @@ chrome.storage.sync.get(["images", "sounds"], function(items){
             }
 
             doSomethingDank();
-
-            chrome.storage.sync.set({ "images": images, "sounds": sounds }, function(){
-                console.log("Dank memes yo");
-            });
         });
     }
     else{
@@ -71,7 +67,13 @@ chrome.storage.sync.get(["images", "sounds"], function(items){
 // +420% dankness to text, images, event listeners, and window intervals
 function mlg_ify(){
     $("img:not(#sanic2fast)").each(function(){
-        $(this).attr("src", getRandomElement(images)).attr("height","").css("height","auto");
+        var h = $(this).height();
+        $(this).attr("src", getRandomElement(images)).attr("height","").css({
+            "height" : h,
+            "width" : "auto",
+            //"max-width" : "100%",
+            //"max-height" : "100%"
+        });
     });
     
     // Get all text nodes on the page and increase the dankness of the text
