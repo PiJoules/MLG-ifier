@@ -6,6 +6,7 @@
 var MLGchecker = "xXx_mlg_checker_xXx";
 
 var images, sounds;
+var initRandSoundID;
 
 // Globals for fedora loop
 var mouseX, mouseY;
@@ -37,18 +38,27 @@ chrome.storage.sync.get(["customSettings", "images", "sounds"], function(items){
     if(!customSettings || typeof images == "undefined" || typeof sounds == "undefined"){
         console.log("Loading defaults");
         // Settings not in storage, load and save defaults
-        $.getJSON(chrome.extension.getURL("settings.json"), function( data ) {
+        $.getJSON(chrome.extension.getURL("settings.json"), function(data){
             // Can't mlg-ify until json is loaded, so call mlg-iifier in getJSON callback
             images = data.images;
             sounds = data.sounds;
-            // Only mlg-ify webpage once
-            if ($("#xXx_mlg_checker_xXx").length === 0){
-                // add the mlg checker
-                $("body").append("<div id='xXx_mlg_checker_xXx'></div>");
-                mlg_ify();
-            }
 
-            doSomethingDank();
+            // Save default muh-mays
+            var settings = {};
+            // Create dictionary to save in chrome settings
+            for (var i = 0; i < images.length; i++) {
+                settings[images[i]] = chrome.extension.getURL("muh_mays/" + images[i]);
+            }
+            chrome.storage.sync.set(settings, function(){
+                // Only mlg-ify webpage once
+                if ($("#xXx_mlg_checker_xXx").length === 0){
+                    // add the mlg checker
+                    $("body").append("<div id='xXx_mlg_checker_xXx'></div>");
+                    mlg_ify();
+                }
+
+                doSomethingDank();
+            });
         });
     }
     else{
@@ -66,16 +76,15 @@ chrome.storage.sync.get(["customSettings", "images", "sounds"], function(items){
 
 // +420% dankness to text, images, event listeners, and window intervals
 function mlg_ify(){
-    $("img:not(#sanic2fast)").each(function(){
-        var h = $(this).height();
-        $(this).attr("src", getRandomElement(images)).attr("height","").css({
-            "height" : h,
-            "width" : "auto",
-            //"max-width" : "100%",
-            //"max-height" : "100%"
+    Array.prototype.forEach.call(document.images, function(element, index, array){
+        var h = element.height;
+        getResource(getRandomElement(images), function(randImg){
+            element.setAttribute("src", randImg)
+            element.style.height = h;
+            element.style.width = "auto";
         });
     });
-    
+
     // Get all text nodes on the page and increase the dankness of the text
     var textNodes = textNodesUnder(document.documentElement);
     for (var nodeNum = 0; nodeNum < textNodes.length; nodeNum++) {
@@ -142,6 +151,7 @@ function mlg_ify(){
     css.innerHTML = "* { font-family: \"Comic Sans MS\" !important; }";
     document.body.appendChild(css);
 
+    initRandSoundID = "initSound";
     window.setInterval(function(){
         // 1% chance of playing random sound every 5 seconds
         if (Math.random() < 0.01){
@@ -170,7 +180,6 @@ function mlg_ify(){
 function doSomethingDank(){
     // Audio tag for playing sound
     var randSound = getRandomElement(sounds);
-    var initRandSoundID = "initSound";
     if (typeof chrome.extension !== "undefined")
         addSound(initRandSoundID, chrome.extension.getURL('sounds/' + randSound));
     else
@@ -192,10 +201,12 @@ function doSomethingDank(){
     }
 
     // Change background image of body
-    $("body").css({
-        "background-image": getRandomElement(images),
-        "background-size": "cover",
-        "background-position": "center"
+    getResource(getRandomElement(images), function(img){
+        $("body").css({
+            "background-image": img,
+            "background-size": "cover",
+            "background-position": "center"
+        });
     });
 
     // Release the fedoras m'lady (if they're not already raining)
@@ -253,7 +264,7 @@ function textNodesUnder(node){
         if(node.nodeType == 3) // If it is a text node
             all.push(node);
         else{
-            if(node.nodeName != "SCRIPT"){
+            if(node.nodeName != "SCRIPT" && node.nodeName != "STYLE"){
                 all = all.concat(textNodesUnder(node));
             }
         }
@@ -323,4 +334,11 @@ function fedoraStorm(){
         velocities = [];
         isRainingFedoras = false;
     } , 10000);
+}
+
+// Get image/sound from chrome storage
+function getResource(resourceName, callback){
+    chrome.storage.sync.get(resourceName, function(items){
+        callback(items[resourceName]);
+    });
 }

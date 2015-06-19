@@ -30,7 +30,7 @@
         "scripts": ["extensionListener.js"]
     },
 
-    "web_accessible_resources": ["sounds/*", "images/fedora.png", "settings.json"],
+    "web_accessible_resources": ["sounds/*", "muh_mays/*", "images/fedora.png", "settings.json"],
 
     "options_page": "options.html"
 }
