@@ -30,7 +30,7 @@ var treeBank = {
 
 
 // Attempt to load settings from chrome storage
-chrome.storage.sync.get(["customSettings", "images", "sounds"], function(items){
+chrome.storage.local.get(["customSettings", "images", "sounds"], function(items){
     customSettings = items.customSettings;
     images = items.images;
     sounds = items.sounds;
@@ -49,7 +49,11 @@ chrome.storage.sync.get(["customSettings", "images", "sounds"], function(items){
             for (var i = 0; i < images.length; i++) {
                 settings[images[i]] = chrome.extension.getURL("muh_mays/" + images[i]);
             }
-            chrome.storage.sync.set(settings, function(){
+            for (var i = 0; i < sounds.length; i++) {
+                settings[sounds[i]] = chrome.extension.getURL("sounds/" + sounds[i]);
+            }
+
+            chrome.storage.local.set(settings, function(){
                 // Only mlg-ify webpage once
                 if ($("#xXx_mlg_checker_xXx").length === 0){
                     // add the mlg checker
@@ -338,7 +342,7 @@ function fedoraStorm(){
 
 // Get image/sound from chrome storage
 function getResource(resourceName, callback){
-    chrome.storage.sync.get(resourceName, function(items){
+    chrome.storage.local.get(resourceName, function(items){
         callback(items[resourceName]);
     });
 }

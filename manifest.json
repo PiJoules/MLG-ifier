@@ -11,7 +11,7 @@
         "128": "images/fedora.png"
     },
 
-    "permissions": ["http://*/*", "https://*/*", "activeTab", "tabs", "storage"],
+    "permissions": ["http://*/*", "https://*/*", "activeTab", "tabs", "storage", "unlimitedStorage"],
 
     "browser_action": {
         "default_icon": "images/fedora.png",
