@@ -1,8 +1,8 @@
 // Globals
-var images, sounds, customSettings;
-var applyChangesBtn, contentTable;
-var imgTypes = ["image/jpeg", "image/png", "image/gif", "image/bmp"];
-var soundTypes = ["audio/x-m4a", "audio/mp3", "audio/ogg", "audio/mpeg", "audio/wav"];
+var images, sounds, customSettings; // Saved chrome settings
+var applyChangesBtn, contentTable, dropZone; // Elements from options.html
+var imgTypes = ["image/jpeg", "image/png", "image/gif", "image/bmp"]; // Valid image types
+var soundTypes = ["audio/x-m4a", "audio/mp3", "audio/ogg", "audio/mpeg", "audio/wav"]; // Valid sound types
 
 loadSettings();
 
@@ -17,10 +17,11 @@ applyChangesBtn.style.display = "none";
 contentTable = document.getElementById('content_table');
 
 // Set up the dnd listeners
-var dropZone = document.getElementById('drop_zone');
+dropZone = document.getElementById('drop_zone');
 dropZone.addEventListener('dragover', handleDragOver, false);
 dropZone.addEventListener('drop', handleFileSelect, false);
 
+// 
 function loadSettings(){
     chrome.storage.local.get(["customSettings", "images", "sounds"], function(items){
         customSettings = items.customSettings;
@@ -42,11 +43,13 @@ function loadSettings(){
                 // Create dictionary to save in chrome settings
                 for (var i = 0; i < images.length; i++) {
                     var key = images[i] + "_MLG_" + i.toString(); // create unique-ish key
-                    settings[images[i]] = chrome.extension.getURL("muh_mays/" + images[i]);
+                    settings[key] = chrome.extension.getURL("muh_mays/" + images[i]);
+                    images[i] = key;
                 }
                 for (var i = 0; i < sounds.length; i++) {
                     var key = sounds[i] + "_MLG_" + i.toString(); // create unique-ish key
-                    settings[sounds[i]] = chrome.extension.getURL("sounds/" + sounds[i]);
+                    settings[key] = chrome.extension.getURL("sounds/" + sounds[i]);
+                    sounds[i] = key;
                 }
                 chrome.storage.local.set(settings);
             };
@@ -58,24 +61,24 @@ function loadSettings(){
 
 // Save new lists of images and sounds to chrome settings, add new srcs, remove deleted srcs
 function saveSettings(soundsNew, imagesNew, keysNew, valuesNew, keysOld){
-    chrome.storage.local.set({"customSettings": true, "sounds": soundsNew, "images": imagesNew}, function(){
-        console.log("Dank memes yo");
-    });
-    if(!(keysNew === undefined || valuesNew === undefined) && keysNew.length > 0 && keysNew.length == valuesNew.length){ // Holy mother of gigantic if statements
+    sounds = soundsNew;
+    images = imagesNew;
+    chrome.storage.local.set({"customSettings": true, "sounds": soundsNew, "images": imagesNew});
+    if(!(keysNew === undefined || valuesNew === undefined) && keysNew.length == valuesNew.length){
         for(var i = 0; i < imagesNew.length; i++){
             var srcObj = {};
             srcObj[keysNew[i]] = valuesNew[i];
             chrome.storage.local.set(srcObj);
         }
     }
-    if(!(keysOld === undefined) && keysOld.length > 0){
+    if(!(keysOld === undefined)){
         for(var i = 0; i < keysOld.length; i++){
-            console.log(keysOld[i]);
             chrome.storage.local.remove(keysOld[i]);
         }
     }
 }
 
+// Gets items from chrome storage synchronously to display in a table
 function loadItems(items, nodeType, itemNodes, i, callback){
     var itemNode = document.createElement(nodeType);
     
@@ -93,6 +96,7 @@ function loadItems(items, nodeType, itemNodes, i, callback){
     });
 }
 
+// On click handler for rm_meme button
 function rmMeme(){
     clearTable();
 
@@ -101,7 +105,7 @@ function rmMeme(){
         labelData = [];
         for(var i = 0; i < images.length; i++){
             // Label with name after removing trailing number used for chrome storage
-            labelData.push(images[i].replace(/\d+$/, ""));
+            labelData.push(images[i].replace(/(_MLG_\d)$/, ""));
         }
         // Display saved images
         fillTable(imgNodes, labelData);
@@ -112,6 +116,7 @@ function rmMeme(){
     });
 }
 
+// On click handler for rm_sound button
 function rmSound(){
     clearTable();
 
@@ -131,6 +136,7 @@ function rmSound(){
     });
 }
 
+// Deletes checked items from chrome settings
 function applyChanges(type){
     // Get items to save and delete
     var allKeys = type == "images"? images : sounds;
@@ -145,22 +151,23 @@ function applyChanges(type){
         else{
             // Unchecked, therefore it should be saved
             var meme = contentTable.rows.item(i).cells[1].firstChild;
-            keysNew.push(allKeys[i] + "_MLG_" + i.toString());
+            keysNew.push(allKeys[i]);
             valuesNew.push(meme.src);
         }
     }
     // Remove old keys from list of keys to remember
     for(var i = 0; i < keysOld.length; i++){
         var index = allKeys.indexOf(keysOld[i]);
-        allKeys.splice(index, i);
+        allKeys.splice(index, 1);
     }
 
     clearTable();
     applyChangesBtn.style.display = "none";
     if(type == "images")
-        saveSettings(sounds, allKeys, keysNew, valuesNew, keysOld);
+        images = allKeys;
     else
-        saveSettings(allKeys, images, keysNew, valuesNew, keysOld);
+        sounds = allKeys;
+    saveSettings(sounds, images, keysNew, valuesNew, keysOld);
 }
 
 // Fill table with list of nodes
@@ -198,25 +205,26 @@ function clearTable(){
     }
 }
 
+// Checks each drag&dropped file (synchronously) and saves it as a data url if it can
 function readFiles(reader, soundsNew, imagesNew, keysNew, valuesNew, files, i, callback){
-    console.log(files[i].name);
-    console.log(files[i].type);
     reader.onloadend = function(){
         var dataSrc = reader.result;
 
         // Process images/sounds/other files
         if(imgTypes.indexOf(files[i].type) > -1){
+            alert("Added " + files[i].name + " to images");
             imagesNew.push(files[i].name + "_MLG_" + i.toString()); // Need a key, but want it to be unique
             keysNew.push(files[i].name + "_MLG_" + i.toString());
             valuesNew.push(dataSrc);
         }
         else if(soundTypes.indexOf(files[i].type) > -1){
+            alert("Added " + files[i].name + " to sounds");
             soundsNew.push(files[i].name + "_MLG_" + i.toString()); // Need a key, but want it to be unique
             keysNew.push(files[i].name + "_MLG_" + i.toString());
             valuesNew.push(dataSrc);
         }
         else
-            alert("U w0t m8 this isn't a dank meme");
+            alert("U w0t m8 " + files[i].name + " isn't a dank meme");
 
         // Call next iteration or callback
         if(i < files.length-1){
@@ -228,6 +236,7 @@ function readFiles(reader, soundsNew, imagesNew, keysNew, valuesNew, files, i, c
     reader.readAsDataURL(files[i]);
 }
 
+// Barely does anything except pick the value out of the object returned from storage
 function getResource(resourceName, callback){
     chrome.storage.local.get(resourceName, function(items){
         callback(items[resourceName]);
@@ -241,7 +250,6 @@ function handleFileSelect(evt) {
 
     var reader = new FileReader();
     readFiles(reader, sounds, images, [], [], files, 0, function(soundsNew, imagesNew, keysNew, valuesNew){
-        console.log("ayy lmao");
         saveSettings(soundsNew, imagesNew, keysNew, valuesNew);
     });
 }

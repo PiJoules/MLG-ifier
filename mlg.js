@@ -205,9 +205,9 @@ function doSomethingDank(){
     }
 
     // Change background image of body
-    getResource(getRandomElement(images), function(img){
+    getResource(getRandomElement(images), function(rand_img){
         $("body").css({
-            "background-image": img,
+            "background-image": rand_img,
             "background-size": "cover",
             "background-position": "center"
         });
