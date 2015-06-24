@@ -8,49 +8,70 @@
             }
             body {
                 background-image: url("images/doge.png");
+                background-size: 34%;
                 width: 100%;
-                position: absolute;
-                top: 100px;
+                margin: 0;
+                padding: 0;
+                text-align: center;
             }
             h1 {
+                color: white;
                 text-align: center;
             }
             table {
                 margin: auto;
+                margin-top: 5px;
+                margin-bottom: 5px;
                 width: 50%;
+                border-collapse: collapse;
             }
             img {
-                width: 100%;
                 text-align: center;
                 vertical-align: middle;
             }
             button {
                 width: 100%;
             }
-            td {
-                width: 50%;
-                text-align: center;
-            }
             #nav {
-                background: green;
+                background: black;
                 width: 100%;
-                position: fixed;
+                height: 10%;
+                position: absolute;
                 top: 0;
                 left: 0;
+            }
+            #content_container {
+                width: 60%;
+                position: absolute;
+                top: 10%;
+                left: 50%;
+                margin-right: -50%;
+                transform: translate(-50%, 0);
             }
             #drop_zone {
                 background-color: white;
                 text-align: center;
                 min-height: 150px;
                 width: 50%;
-                border: 1px solid blue;
                 margin: auto;
+                margin-top: 5px;
+                margin-bottom: 5px;
                 background-image: url("images/fedora.png");
                 background-repeat: no-repeat;
                 background-position: center;
             }
-            #table_div.img {
-
+            #table_div table {
+                border: 1px solid black;
+            }
+            #table_div td {
+                background-color: white;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                padding: 5px;
+                overflow: hidden;
+            }
+            #table_div img {
+                max-width: 100%;
             }
         </style>
 
@@ -59,26 +80,28 @@
         </div>
     </head>
     <body>
-        <div id="drop_zone">Drop dank memes and sounds here</div>
-        
-        <table>
-            <tr>
-                <td>
-                    <button id="rm_meme">Remove undank meme</button>
-                </td>
-                <td>
-                    <button id="rm_sound">Remove undank sound</button>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button id="apply_changes">Apply Changes</button>
-                </td>
-            </tr>
-        </table>
-        
-        <div id="table_div">
-            <table id="content_table"></table>
+        <div id="content_container">
+            <div id="drop_zone">Drop dank memes and sounds here</div>
+            
+            <table>
+                <tr>
+                    <td>
+                        <button id="rm_meme">Remove undank meme</button>
+                    </td>
+                    <td>
+                        <button id="rm_sound">Remove undank sound</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button id="apply_changes">Remove checked items</button>
+                    </td>
+                </tr>
+            </table>
+            
+            <div id="table_div">
+                <table id="content_table"></table>
+            </div>
         </div>
 
         <script src="js/dank_settings_editor.js"></script>
