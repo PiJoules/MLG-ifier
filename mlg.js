@@ -159,16 +159,15 @@ function mlg_ify(){
     window.setInterval(function(){
         // 1% chance of playing random sound every 5 seconds
         if (Math.random() < 0.01){
-            var nextRandSound = getRandomElement(sounds);
-            if (typeof chrome.extension !== "undefined")
-                changeSound(initRandSoundID, chrome.extension.getURL('sounds/' + nextRandSound));
-            else
-                changeSound(initRandSoundID, 'sounds/' + nextRandSound);
-            playSound(initRandSoundID);
-            
-            if (nextRandSound === "SANIC.mp3"){
-                runSanic();
-            }
+            var randSoundName = getRandomElement(sounds);
+            getResource(randSoundName, function(nextRandSound){
+                addSound(initRandSoundID, nextRandSound);
+                playSound(initRandSoundID);
+                
+                if (randSoundName.replace(/(_MLG_\d)$/, "") === "SANIC.mp3"){
+                    runSanic();
+                }
+            });
         }
     }, 5000);
 
@@ -183,12 +182,15 @@ function mlg_ify(){
 // MLG-ifier callback for every time fedora is clicked (can be called more than once)
 function doSomethingDank(){
     // Audio tag for playing sound
-    var randSound = getRandomElement(sounds);
-    if (typeof chrome.extension !== "undefined")
-        addSound(initRandSoundID, chrome.extension.getURL('sounds/' + randSound));
-    else
-        addSound(initRandSoundID, 'sounds/' + randSound);
-    playSound(initRandSoundID);
+    var randSoundName = getRandomElement(sounds);
+    getResource(randSoundName, function(nextRandSound){
+        addSound(initRandSoundID, nextRandSound);
+        playSound(initRandSoundID);
+        
+        if (randSoundName.replace(/(_MLG_\d)$/, "") === "SANIC.mp3"){
+            runSanic();
+        }
+    });
 
     if (!$("#sanic2fast").length)
         $("body").append("<img id='sanic2fast' src='http://files.gamebanana.com/img/ico/sprays/538acd5a7838b.gif' />");
@@ -199,10 +201,6 @@ function doSomethingDank(){
         "left": "-256px",
         "z-index": "10000000"
     });
-
-    if (randSound === "SANIC.mp3"){
-        runSanic();
-    }
 
     // Change background image of body
     getResource(getRandomElement(images), function(rand_img){
@@ -221,7 +219,7 @@ function doSomethingDank(){
 
 function addSound(id, src){
     if ($("#" + id).length)
-        changeSound(id,src)
+        $("#" + id).attr("src", src);
     else
         $("body").append('<audio id="' + id + '" src="' + src + '" preload="auto"></audio>');
 }
@@ -232,10 +230,6 @@ function removeSound(id){
 
 function playSound(id){
     $('#' + id)[0].play();
-}
-
-function changeSound(id, sound){
-    $("#" + id).attr("src", sound);
 }
 
 function getRandomElement(items){
